@@ -5,18 +5,21 @@ set -ouex pipefail
 # 1. Copy repository files from system_files/ to root /
 cp -avf "/ctx/system_files"/. /
 
-# 2. Global Git Line-Ending Policy (Universal Unix check-in, as-is checkout)
+# 2. Dynamic OS Branding (Keep Fedora version dynamic, brand studio identity)
+sed -i 's/^NAME=.*/NAME="Shattered Vales DX"/' /usr/lib/os-release
+sed -i 's/^PRETTY_NAME=.*/PRETTY_NAME="Shattered Vales DX Workstation"/' /usr/lib/os-release
+sed -i 's/^DEFAULT_HOSTNAME=.*/DEFAULT_HOSTNAME="shatteredvales-dx"/' /usr/lib/os-release
+echo "LOGO=system-logo-sv" >> /usr/lib/os-release
+
+# 3. Global Git Line-Ending Policy (Universal Unix check-in, as-is checkout)
 git config --system core.autocrlf input
 git config --system core.eol lf
 
-# 3. Add External Repositories (Microsoft .NET 10 & Tailscale)
-rpm --import https://packages.microsoft.com/keys/microsoft.asc
-curl -fsSL https://packages.microsoft.com/config/fedora/41/prod.repo -o /etc/yum.repos.d/microsoft-prod.repo
+# 4. Tailscale Official Repository (Dynamic release)
 curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo -o /etc/yum.repos.d/tailscale.repo
 
-# 4. Install Requested Base CLI & Dev Tooling
-dnf5 install -y --skip-unavailable \
-    tmux \
+# 5. Install Studio Tooling & Platform Dependencies (Fedora Native Repositories)
+dnf5 install -y \
     dotnet-sdk-10.0 \
     nuget \
     tailscale \
@@ -38,21 +41,20 @@ dnf5 install -y --skip-unavailable \
     libnotify \
     alsa-lib
 
-# 5. Device Permissions & Udev Group Setup for Android / WearOS Hardware
-# Create plugdev group if not present (standard across Android/Debian tooling)
+# 6. Udev group setup for physical watch / mobile debugging
 getent group plugdev || groupadd -r plugdev
 
-# 6. Enable System Services
+# 7. Enable Services
 systemctl enable podman.socket
 systemctl enable tailscaled.service
 
-# 7. Ensure Flathub is registered system-wide for user desktop apps
+# 8. Ensure Flathub is registered
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-# 8. Compile GSettings Schemas so the Shattered Vales wallpaper is activated
+# 9. Compile Branding Schemas
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
-# 9. Install the workstation bootstrap helper to /usr/bin
+# 10. Copy Workstation Setup Helper to /usr/bin
 cp /ctx/setup-workstation.sh /usr/bin/setup-workstation
 chmod +x /usr/bin/setup-workstation
 
