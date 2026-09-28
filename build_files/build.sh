@@ -15,46 +15,28 @@ echo "LOGO=system-logo-sv" >> /usr/lib/os-release
 git config --system core.autocrlf input
 git config --system core.eol lf
 
-# 4. Tailscale Official Repository (Dynamic release)
-curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo -o /etc/yum.repos.d/tailscale.repo
-
-# 5. Install Studio Tooling & Platform Dependencies (Fedora Native Repositories)
+# 4. Install Studio Tooling (Only packages not already bundled in bluefin-dx)
 dnf5 install -y \
     dotnet-sdk-10.0 \
     nuget \
-    tailscale \
-    rclone \
-    cmake \
-    nano \
-    wget \
+    java-openjdk-devel \
     ripgrep \
-    android-tools \
-    android-udev-rules \
-    java-21-openjdk-devel \
-    gcc \
-    gcc-c++ \
-    make \
-    python3-pip \
-    python3-devel \
-    mesa-libGLU \
-    nss \
-    libnotify \
-    alsa-lib
+    cmake
 
-# 6. Udev group setup for physical watch / mobile debugging
+# 5. Device Permissions & Udev Group Setup for Android / WearOS
 getent group plugdev || groupadd -r plugdev
 
-# 7. Enable Services
+# 6. Enable Services
 systemctl enable podman.socket
 systemctl enable tailscaled.service
 
-# 8. Ensure Flathub is registered
+# 7. Ensure Flathub is registered
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-# 9. Compile Branding Schemas
+# 8. Compile Branding Schemas
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
-# 10. Copy Workstation Setup Helper to /usr/bin
+# 9. Copy Workstation Setup Helper to /usr/bin
 cp /ctx/setup-workstation.sh /usr/bin/setup-workstation
 chmod +x /usr/bin/setup-workstation
 
