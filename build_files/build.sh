@@ -14,8 +14,9 @@ rpm --import https://packages.microsoft.com/keys/microsoft.asc
 curl -fsSL https://packages.microsoft.com/config/fedora/41/prod.repo -o /etc/yum.repos.d/microsoft-prod.repo
 curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo -o /etc/yum.repos.d/tailscale.repo
 
-# 4. Install Studio Tooling, Platform Dependencies & Hardware Support
-dnf5 install -y \
+# 4. Install Requested Base CLI & Dev Tooling
+dnf5 install -y --skip-unavailable \
+    tmux \
     dotnet-sdk-10.0 \
     nuget \
     tailscale \
