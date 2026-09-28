@@ -1,0 +1,13 @@
+NAME="Shattered Vales DX"
+PRETTY_NAME="Shattered Vales DX Workstation"
+ID=shatteredvales-dx
+ID_LIKE="bluefin fedora"
+VERSION="1.0 (Developer Edition)"
+VERSION_ID="1.0"
+VARIANT="Developer Edition"
+VARIANT_ID=dx
+HOME_URL="https://github.com/Shattered-Vales-Studio"
+BUG_REPORT_URL="https://github.com/Shattered-Vales-Studio"
+SUPPORT_URL="https://github.com/Shattered-Vales-Studio"
+LOGO=system-logo-sv
+DOCUMENTATION_URL="https://github.com/Shattered-Vales-Studio"

@@ -51,4 +51,8 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 # 8. Compile GSettings Schemas so the Shattered Vales wallpaper is activated
 glib-compile-schemas /usr/share/glib-2.0/schemas
 
+# 9. Install the workstation bootstrap helper to /usr/bin
+cp /ctx/setup-workstation.sh /usr/bin/setup-workstation
+chmod +x /usr/bin/setup-workstation
+
 echo "===> Base Layer Build Complete"

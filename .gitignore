@@ -4,3 +4,5 @@ output
 _build-*/**
 *_chunkah_*
 *_rpm-ostree_*
+.DS_Store
+.DS_Store
