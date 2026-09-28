@@ -15,11 +15,11 @@ echo "LOGO=system-logo-sv" >> /usr/lib/os-release
 git config --system core.autocrlf input
 git config --system core.eol lf
 
-# 4. Install Studio Tooling (Only packages not already bundled in bluefin-dx)
+# 4. Install Studio Tooling
 dnf5 install -y \
     dotnet-sdk-10.0 \
     nuget \
-    java-openjdk-devel \
+    java-devel \
     ripgrep \
     cmake
 
