@@ -158,6 +158,12 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
           DIGEST: ${{ steps.push-image.outputs.digest }}
         run: |
+          # 1. Verify what the runner sees (first line only, never echoes secret data)
+          echo "Key header: $(echo "${COSIGN_PRIVATE_KEY}" | head -n 1)"
+          echo "Key footer: $(echo "${COSIGN_PRIVATE_KEY}" | tail -n 1)"
+          echo "Checking cosign.pub in repo:"
+          head -n 1 cosign.pub || true
+          
           # https://github.com/containers/container-libs/issues/388
           # https://github.com/coreos/rpm-ostree/issues/5509
           # use old bundle format, so we can use newer cosign 3.X.X instead of 2.X.X
