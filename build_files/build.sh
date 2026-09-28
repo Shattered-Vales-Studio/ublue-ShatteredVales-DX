@@ -2,26 +2,53 @@
 
 set -ouex pipefail
 
-# Copy the contents of system_files/ of the git repo to /
+# 1. Copy repository files from system_files/ to root /
 cp -avf "/ctx/system_files"/. /
 
-### Install packages
+# 2. Global Git Line-Ending Policy (Universal Unix check-in, as-is checkout)
+git config --system core.autocrlf input
+git config --system core.eol lf
 
-# Packages can be installed from any enabled yum repo on the image.
-# RPMfusion repos are available by default in ublue main images
-# List of rpmfusion packages can be found here:
-# https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/43/x86_64/repoview/index.html&protocol=https&redirect=1
+# 3. Add External Repositories (Microsoft .NET 10 & Tailscale)
+rpm --import https://packages.microsoft.com/keys/microsoft.asc
+curl -fsSL https://packages.microsoft.com/config/fedora/41/prod.repo -o /etc/yum.repos.d/microsoft-prod.repo
+curl -fsSL https://pkgs.tailscale.com/stable/fedora/tailscale.repo -o /etc/yum.repos.d/tailscale.repo
 
-# this installs a package from fedora repos
-dnf5 install -y tmux
+# 4. Install Studio Tooling, Platform Dependencies & Hardware Support
+dnf5 install -y \
+    dotnet-sdk-10.0 \
+    nuget \
+    tailscale \
+    rclone \
+    cmake \
+    nano \
+    wget \
+    ripgrep \
+    android-tools \
+    android-udev-rules \
+    java-21-openjdk-devel \
+    gcc \
+    gcc-c++ \
+    make \
+    python3-pip \
+    python3-devel \
+    mesa-libGLU \
+    nss \
+    libnotify \
+    alsa-lib
 
-# Use a COPR Example:
-#
-# dnf5 -y copr enable ublue-os/staging
-# dnf5 -y install package
-# Disable COPRs so they don't end up enabled on the final image:
-# dnf5 -y copr disable ublue-os/staging
+# 5. Device Permissions & Udev Group Setup for Android / WearOS Hardware
+# Create plugdev group if not present (standard across Android/Debian tooling)
+getent group plugdev || groupadd -r plugdev
 
-#### Example for enabling a System Unit File
-
+# 6. Enable System Services
 systemctl enable podman.socket
+systemctl enable tailscaled.service
+
+# 7. Ensure Flathub is registered system-wide for user desktop apps
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# 8. Compile GSettings Schemas so the Shattered Vales wallpaper is activated
+glib-compile-schemas /usr/share/glib-2.0/schemas
+
+echo "===> Base Layer Build Complete"
