@@ -77,6 +77,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      - name: Disable AppArmor for nested container mounts
+        run: |
+          sudo systemctl stop apparmor || true
+          sudo aa-teardown || true
+
       - name: Build disk images
         id: build
         uses: osbuild/bootc-image-builder-action@486ce86198c7d7e123a19dd239525562c4f520d0 # main
